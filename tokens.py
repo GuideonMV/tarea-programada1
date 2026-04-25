@@ -8,4 +8,14 @@ def cargarTokens(tokens):
         reemplazo = partes[1].strip()
         tokens.append((palabraReservada, reemplazo))
     archivo.close()
-    return tokens
+    print("====================================")
+    return "¡Tokens agregados correctamente!"
+
+def mostrarTokens(listaTokens):
+    if len(listaTokens) == 0:
+        print("No hay tokens cargados")
+        return
+    print("\n===========TOKENS CARGADOS===========")
+    for tupla in listaTokens:
+        print(tupla[0], "->", tupla[1])
+   
