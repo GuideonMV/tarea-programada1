@@ -17,7 +17,7 @@ def menu():
         print("1. Cargar tokens\n2. Mostrar tokens\n3. Agregar/modificar token\n4. Guardar tokens\n5. Traducir código\n6. Generar CSV\n7. Generar HTML\n8. Bitácora (submenú)\n9. Salir")
         opcion = int(input("Seleccione una opción: "))
         if opcion == 1:
-            print(tokens.cargarTokens(listaTokens))
+            print(tokens.cargarTokensAux(listaTokens))
         elif opcion == 2:
             tokens.mostrarTokens(listaTokens)
         elif opcion == 3:
