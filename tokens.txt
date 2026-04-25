@@ -1,0 +1,5 @@
+def -> funcion
+while -> mientras
+return -> devuelva
+print -> pinte
+for -> para
