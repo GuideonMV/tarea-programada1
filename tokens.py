@@ -1,9 +1,18 @@
+def estarVacio(pArchivo):
+    for linea in pArchivo:
+        pArchivo.seek(0)
+        return False
+    return True
 def cargarTokensAux(tokens):
     while True:
-        nombreArchivo = input("Ingrese el nonmbre del archivo: ")
+        nombreArchivo = input("Ingrese el nombre del archivo: ")
         try:
             archivo = open(nombreArchivo, "r")
-            break
+            if estarVacio(archivo):
+                print("El archivo ingresado está vacío")
+                archivo.close()
+            else:
+                break
         except:
             print("El archivo ingresado no existe")
     while True:
