@@ -41,7 +41,6 @@ def mostrarTokens(listaTokens):
     for tupla in listaTokens:
         print(tupla[0], "->", tupla[1])
 
-<<<<<<< HEAD
 def agregarModif(pListaTokens):
     textoTokens= input("Ingrese texto a procesar: ")
     separador = input("Ingrese el sepador utilizado en el texto: ")
@@ -64,8 +63,6 @@ def agregarModif(pListaTokens):
     print("====================================")
     return "Proceso finalizado :)"
 
-=======
->>>>>>> d86d2e6794a04f1ba5b34fb92d8c67ab2d7acaf8
 def existeToken(pListaTokens, pToken):
     for tupla in pListaTokens:
         if pToken == tupla[0]:
@@ -80,13 +77,45 @@ def modificarToken(pListaTokens, pPalabraReservada):
                 nuevoReemplazo = input("Ingrese el nuevo reemplazo: ")
                 pListaTokens[i] = (pPalabraReservada, nuevoReemplazo)
                 print("====================================")
-<<<<<<< HEAD
         return "¡El token ha sido modificado correctamente!"
                
 def agregarToken(pListaTokens, pPalabraReservada, pTraduccion):
     nuevoToken = [pPalabraReservada, pTraduccion]
     pListaTokens.append(nuevoToken)
     return "¡El token se agregó correctamente!"
-=======
-        return "¡El token ha sido modificado correctamente!"
->>>>>>> d86d2e6794a04f1ba5b34fb92d8c67ab2d7acaf8
+
+def guardarArchivo(pListaTokens):
+    nombreArchNuev = input("Ingrese el nombre del archivo a crear: ")
+    separador = input("Ingrese el separador que desea usar: ")
+
+    with open(nombreArchNuev, "w", encoding="utf-8") as archivo:
+        for palabra, token in pListaTokens:
+            linea = palabra + " " + separador + " " + token + "\n"
+            archivo.write(linea)
+    print("====================================")
+    return "¡Archivo guardado correctamente!"
+
+def traducirTokens(pListaTokens):
+    nombre = input("Ingrese el nombre del archivo a traducir: ")
+    nombreNuev = input("Ingrese el nombre del nuevo archivo: ")
+    resultado = []
+    with open(nombre, "r", encoding="utf-8") as archivo:
+        for linea in archivo:
+            espacios = len(linea) - len(linea.lstrip())
+            contenido = linea.strip()
+            palabras = contenido.split()
+            nueva = []
+            for palabra in palabras:
+                for original, traduccion in pListaTokens:
+                    if "print" in palabra:
+                        palabra = "pinte"
+                    if palabra == original:
+                        palabra = traduccion
+                        break
+                nueva.append(palabra)
+            nuevaLinea = " " * espacios + " ".join(nueva)
+            resultado.append(nuevaLinea)
+    with open(nombreNuev, "w", encoding="utf-8") as archivo:
+        archivo.write("\n".join(resultado))
+    return "¡Se ha realizado correctamente la traducción!"
+

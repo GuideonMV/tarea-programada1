@@ -24,7 +24,7 @@ def menu():
         elif opcion == "4":
             print(tokens.guardarArchivo(listaTokens))
         elif opcion == "5":
-            pass
+            print(tokens.traducirTokens(listaTokens))
         elif opcion == "6":
             pass
         elif opcion == "7":
