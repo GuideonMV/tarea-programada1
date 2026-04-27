@@ -3,6 +3,7 @@ def estarVacio(pArchivo):
         pArchivo.seek(0)
         return False
     return True
+
 def cargarTokensAux(tokens):
     while True:
         nombreArchivo = input("Ingrese el nombre del archivo: ")
@@ -27,9 +28,11 @@ def cargarTokensAux(tokens):
             return cargarTokens()
         except:
             print("El separador ingresado no es correcto")
+
 def cargarTokens():
         print("====================================")
         return "¡Tokens agregados correctamente!"
+
 def mostrarTokens(listaTokens):
     if len(listaTokens) == 0:
         print("No hay tokens cargados")
@@ -37,4 +40,19 @@ def mostrarTokens(listaTokens):
     print("\n===========TOKENS CARGADOS===========")
     for tupla in listaTokens:
         print(tupla[0], "->", tupla[1])
-   
+
+def existeToken(pListaTokens, pToken):
+    for tupla in pListaTokens:
+        if pToken == tupla[0]:
+            return True
+    return False
+
+def modificarToken(pListaTokens, pPalabraReservada):
+        for i in range(len(pListaTokens)):
+            tupla = pListaTokens[i]
+            palabraReservada = tupla[0]
+            if palabraReservada == pPalabraReservada:
+                nuevoReemplazo = input("Ingrese el nuevo reemplazo: ")
+                pListaTokens[i] = (pPalabraReservada, nuevoReemplazo)
+                print("====================================")
+        return "¡El token ha sido modificado correctamente!"
