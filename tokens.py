@@ -41,6 +41,7 @@ def mostrarTokens(listaTokens):
     for tupla in listaTokens:
         print(tupla[0], "->", tupla[1])
 
+<<<<<<< HEAD
 def agregarModif(pListaTokens):
     textoTokens= input("Ingrese texto a procesar: ")
     separador = input("Ingrese el sepador utilizado en el texto: ")
@@ -63,6 +64,8 @@ def agregarModif(pListaTokens):
     print("====================================")
     return "Proceso finalizado :)"
 
+=======
+>>>>>>> d86d2e6794a04f1ba5b34fb92d8c67ab2d7acaf8
 def existeToken(pListaTokens, pToken):
     for tupla in pListaTokens:
         if pToken == tupla[0]:
@@ -77,9 +80,13 @@ def modificarToken(pListaTokens, pPalabraReservada):
                 nuevoReemplazo = input("Ingrese el nuevo reemplazo: ")
                 pListaTokens[i] = (pPalabraReservada, nuevoReemplazo)
                 print("====================================")
+<<<<<<< HEAD
         return "¡El token ha sido modificado correctamente!"
                
 def agregarToken(pListaTokens, pPalabraReservada, pTraduccion):
     nuevoToken = [pPalabraReservada, pTraduccion]
     pListaTokens.append(nuevoToken)
     return "¡El token se agregó correctamente!"
+=======
+        return "¡El token ha sido modificado correctamente!"
+>>>>>>> d86d2e6794a04f1ba5b34fb92d8c67ab2d7acaf8
