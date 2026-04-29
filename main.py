@@ -30,6 +30,7 @@ def menu():
         elif opcion == "7":
             pass
         elif opcion == "8":
+            # otro menu
             pass
         elif opcion == "9":
             print("Saliendo del programa")

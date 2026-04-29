@@ -8,39 +8,42 @@ def cargarTokensAux(tokens):
     while True:
         nombreArchivo = input("Ingrese el nombre del archivo: ")
         try:
-            archivo = open(nombreArchivo, "r")
-            if estarVacio(archivo):
-                print("El archivo ingresado está vacío")
-                archivo.close()
-            else:
-                break
+            with open(nombreArchivo, "r", encoding="utf-8") as archivo:
+                if estarVacio(archivo):
+                    print("El archivo ingresado está vacío")   
+                else:
+                    while True:
+                        separador = input("Ingrese el separador utilizado: ")
+                        try:
+                            cargarTokens(tokens,archivo,separador)
+                            print("====================================")
+                            return "¡Tokens agregados correctamente!"
+                        except:
+                            print("El separador ingresado no es correcto")
         except:
             print("El archivo ingresado no existe")
-    while True:
-        separador = input("Ingrese el separador utilizado: ")
-        try:
-            for linea in archivo:
-                partes = linea.split(separador)
-                palabraReservada = partes[0].strip()
-                reemplazo = partes[1].strip()
-                tokens.append((palabraReservada, reemplazo))
-            archivo.close()
-            return cargarTokens()
-        except:
-            print("El separador ingresado no es correcto")
 
-def cargarTokens():
-        print("====================================")
-        return "¡Tokens agregados correctamente!"
+def cargarTokens(tokens,archivo,separador):
+    for linea in archivo:
+        partes = linea.split(separador)
+        palabraReservada = partes[0].strip()
+        reemplazo = partes[1].strip()
+        tokens.append((palabraReservada, reemplazo))
+    return " "
 
-def mostrarTokens(listaTokens):
-    if len(listaTokens) == 0:
-        print("No hay tokens cargados")
+def mostrarTokens(pListaTokens):
+    if not mostrarTokensAux(pListaTokens):
+        print("===========TOKENS CARGADOS===========")
+        for tupla in pListaTokens:
+            print(tupla[0], "->", tupla[1])
         return
-    print("\n===========TOKENS CARGADOS===========")
-    for tupla in listaTokens:
-        print(tupla[0], "->", tupla[1])
 
+def mostrarTokensAux(pListaTokens):
+    if len(pListaTokens) == 0:
+        print("El archivo ingreso se encuentra vacío")
+        return True
+    return False
+    
 def agregarModif(pListaTokens):
     textoTokens= input("Ingrese texto a procesar: ")
     separador = input("Ingrese el sepador utilizado en el texto: ")
