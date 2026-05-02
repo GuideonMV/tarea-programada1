@@ -1,35 +1,61 @@
 def estarVacio(pArchivo):
-    for linea in pArchivo:
-        pArchivo.seek(0)
-        return False
+    contenido = pArchivo.readlines()
+    for linea in contenido:
+        if linea.strip() != "":
+            return False
     return True
 
-def cargarTokensAux(tokens):
+def existeReservada(pListaTokens, pToken):
+    for tupla in pListaTokens:
+        if pToken == tupla[0]:
+            return True
+    return False
+
+def cargarTokensAux(pListaTokens):
     while True:
         nombreArchivo = input("Ingrese el nombre del archivo: ")
         try:
             with open(nombreArchivo, "r", encoding="utf-8") as archivo:
                 if estarVacio(archivo):
-                    print("El archivo ingresado está vacío")   
-                else:
-                    while True:
-                        separador = input("Ingrese el separador utilizado: ")
-                        try:
-                            cargarTokens(tokens,archivo,separador)
-                            print("====================================")
-                            return "¡Tokens agregados correctamente!"
-                        except:
-                            print("El separador ingresado no es correcto")
+                    return "El archivo ingresado está vacío"
+                archivo.seek(0)
+                while True:
+                    separador = input("Ingrese el separador utilizado: ")
+                    try:
+                        return cargarTokens(pListaTokens, archivo, separador)
+                    except:
+                        print("El separador ingresado no es correcto")       
         except:
             print("El archivo ingresado no existe")
 
-def cargarTokens(tokens,archivo,separador):
-    for linea in archivo:
+def cargarTokens(pListaTokens, nombreArchivo, separador):
+    mensaje = False
+    for linea in nombreArchivo:
+        linea = linea.strip()
+        if linea == "":
+            continue
+        if separador not in linea:
+            if not mensaje:
+                print("Uno o varios de los tokens ingresados no tienen separador o es incorrecto")
+                mensaje = True
+            continue
         partes = linea.split(separador)
+        if len(partes) < 2:
+            continue
         palabraReservada = partes[0].strip()
         reemplazo = partes[1].strip()
-        tokens.append((palabraReservada, reemplazo))
-    return " "
+        if palabraReservada == "" or reemplazo == "":
+            print(f"El token '{palabraReservada + " " + separador + " " + reemplazo}' no cumple con el formato adecuado")
+            continue
+        if not existeReservada(pListaTokens, palabraReservada):
+            pListaTokens.append((palabraReservada, reemplazo))
+        else:
+            print(f"El token '{palabraReservada + " " + separador + " " + reemplazo}' ya existe en la base de datos")
+    if len(pListaTokens) == 0:
+        return "No se encontraron tokens válidos"
+    if len(pListaTokens) > 1:
+        print("Los demás tokens han sido agregados")
+    return "¡Proceso realizado con éxito!"
 
 def mostrarTokens(pListaTokens):
     if not mostrarTokensAux(pListaTokens):
