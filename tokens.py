@@ -58,43 +58,64 @@ def cargarTokens(pListaTokens, nombreArchivo, separador):
     return "¡Proceso realizado con éxito!"
 
 def mostrarTokens(pListaTokens):
-    if not mostrarTokensAux(pListaTokens):
+    if not estarVacia(pListaTokens):
         print("===========TOKENS CARGADOS===========")
         for tupla in pListaTokens:
             print(tupla[0], "->", tupla[1])
         return
 
-def mostrarTokensAux(pListaTokens):
+def estarVacia(pListaTokens):
     if len(pListaTokens) == 0:
         print("El archivo ingreso se encuentra vacío")
         return True
     return False
     
-def agregarModif(pListaTokens):
-    textoTokens= input("Ingrese texto a procesar: ")
-    separador = input("Ingrese el sepador utilizado en el texto: ")
+def agregarModifAux(pListaTokens):
+    textoTokens = input("Ingrese texto a procesar: ").strip()
+    if textoTokens == "":
+        return "La entrada no puede estar vacía"
+    separador = input("Ingrese el separador utilizado en el texto: ").strip()
+    if separador == "":
+        print("El separador no puede estar vacío")
+        return
     print("====================================")
+    return agregarModif(pListaTokens, textoTokens, separador)
+
+def agregarModif(pListaTokens, textoTokens, separador):
     tokens = textoTokens.split()
     for elemento in tokens:
         elemento = elemento.strip()
+        if separador not in elemento:
+            print(f"Token ignorado '{elemento}': no contiene el separador indicado")
+            print("====================================")
+            continue
         partes = elemento.split(separador)
-        palabraReservada = partes[0]
-        traduccion = partes[1]
-        if existeToken(pListaTokens, palabraReservada):
-            print(f"¡El token '{palabraReservada + " " + separador + " " + traduccion}' se encontró en la base de datos!\nSe procederá a modificarlo")
+        if len(partes) != 2:
+            print(f"Token ignorado '{elemento}': formato incorrecto")
+            print("====================================")
+            continue
+        palabraReservada = partes[0].strip()
+        traduccion = partes[1].strip()
+        if palabraReservada == "" or traduccion == "":
+            print(f"Token ignorado '{elemento}': partes vacías")
+            print("====================================")
+            continue
+        
+        if existeReservada(pListaTokens, palabraReservada):
+            print(f"¡El token '{palabraReservada + ' ' + separador + ' ' + traduccion}' se encontró en la base de datos!\nSe procederá a modificarlo")
             print("====================================")
             print(modificarToken(pListaTokens, palabraReservada))
             print("====================================")
         else:
-            print(f"No se encontró el token '{palabraReservada + " " + separador + " " + traduccion}' en la base de datos\nSe procederá a agregarlo")
+            print(f"No se encontró el token '{palabraReservada + ' ' + separador + ' ' + traduccion}' en la base de datos\nSe procederá a agregarlo")
             print("====================================")
             print(agregarToken(pListaTokens, palabraReservada, traduccion))
-    print("====================================")
+            print("====================================")
     return "Proceso finalizado :)"
 
-def existeToken(pListaTokens, pToken):
+def existeTraduccion(pListaTokens, pToken):
     for tupla in pListaTokens:
-        if pToken == tupla[0]:
+        if pToken == tupla[1]:
             return True
     return False
 
@@ -103,13 +124,18 @@ def modificarToken(pListaTokens, pPalabraReservada):
             tupla = pListaTokens[i]
             palabraReservada = tupla[0]
             if palabraReservada == pPalabraReservada:
-                nuevoReemplazo = input("Ingrese el nuevo reemplazo: ")
+                nuevoReemplazo = input("Ingrese el nuevo reemplazo: ").strip()
+                if nuevoReemplazo == "":
+                    return "El reemplazo no puede estar vacío"
+                if existeTraduccion(pListaTokens, nuevoReemplazo):
+                    return f"La traducción: '{nuevoReemplazo}' ya está siendo utilizada en otro token"
                 pListaTokens[i] = (pPalabraReservada, nuevoReemplazo)
                 print("====================================")
-        return "¡El token ha sido modificado correctamente!"
+                return "¡El token ha sido modificado correctamente!"
+        return "Token no encontrado"
                
 def agregarToken(pListaTokens, pPalabraReservada, pTraduccion):
-    nuevoToken = [pPalabraReservada, pTraduccion]
+    nuevoToken = (pPalabraReservada, pTraduccion)
     pListaTokens.append(nuevoToken)
     return "¡El token se agregó correctamente!"
 

@@ -20,7 +20,7 @@ def menu():
         elif opcion == "2":
             tokens.mostrarTokens(listaTokens)
         elif opcion == "3":
-            print(tokens.agregarModif(listaTokens))
+            print(tokens.agregarModifAux(listaTokens))
         elif opcion == "4":
             print(tokens.guardarArchivo(listaTokens))
         elif opcion == "5":
