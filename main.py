@@ -22,7 +22,7 @@ def menu():
         elif opcion == "3":
             print(tokens.agregarModifAux(listaTokens))
         elif opcion == "4":
-            print(tokens.guardarArchivo(listaTokens))
+            print(tokens.guardarArchivoAux(listaTokens))
         elif opcion == "5":
             print(tokens.traducirTokens(listaTokens))
         elif opcion == "6":

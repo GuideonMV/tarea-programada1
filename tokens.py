@@ -139,14 +139,30 @@ def agregarToken(pListaTokens, pPalabraReservada, pTraduccion):
     pListaTokens.append(nuevoToken)
     return "¡El token se agregó correctamente!"
 
-def guardarArchivo(pListaTokens):
-    nombreArchNuev = input("Ingrese el nombre del archivo a crear: ")
-    separador = input("Ingrese el separador que desea usar: ")
-
-    with open(nombreArchNuev, "w", encoding="utf-8") as archivo:
-        for palabra, token in pListaTokens:
-            linea = palabra + " " + separador + " " + token + "\n"
-            archivo.write(linea)
+def guardarArchivoAux(pListaTokens):
+        if estarVacia(pListaTokens):
+            return "La base de datos se encuentra vacía"
+        while True:
+            nombreArchNuev = input("Ingrese el nombre del archivo a crear: ")
+            if nombreArchNuev == "":
+                print ("Debe de ingresar un nombre para el archivo")
+                continue
+            if not re.match(r"^[a-z0-9]+\.txt$", nombreArchNuev):
+                print("El formato del nombre no es válido\nDebe de terminar en .txt")
+                continue
+            while True:
+                separador = input("Ingrese el separador que desea usar: ")
+                if separador == "" or separador == " ":
+                    print ("El separador no puede estar vacío ni puede ser un espacio\n Por favor vuelva a intentarlo")
+                    continue
+                else:
+                    with open(nombreArchNuev, "w", encoding="utf-8") as archivo:
+                        return guardarArchivo(pListaTokens, archivo, separador)
+                
+def guardarArchivo(pListaTokens, pArchivo, pSeparador):
+    for palabra, token in pListaTokens:
+        linea = palabra + " " + pSeparador + " " + token + "\n"
+        pArchivo.write(linea)
     print("====================================")
     return "¡Archivo guardado correctamente!"
 
