@@ -166,27 +166,62 @@ def guardarArchivo(pListaTokens, pArchivo, pSeparador):
     print("====================================")
     return "¡Archivo guardado correctamente!"
 
-def traducirTokens(pListaTokens):
-    nombre = input("Ingrese el nombre del archivo a traducir: ")
-    nombreNuev = input("Ingrese el nombre del nuevo archivo: ")
-    resultado = []
-    with open(nombre, "r", encoding="utf-8") as archivo:
-        for linea in archivo:
-            espacios = len(linea) - len(linea.lstrip())
-            contenido = linea.strip()
-            palabras = contenido.split()
-            nueva = []
-            for palabra in palabras:
-                for original, traduccion in pListaTokens:
-                    if "print" in palabra:
-                        palabra = "pinte"
-                    if palabra == original:
-                        palabra = traduccion
-                        break
-                nueva.append(palabra)
-            nuevaLinea = " " * espacios + " ".join(nueva)
-            resultado.append(nuevaLinea)
-    with open(nombreNuev, "w", encoding="utf-8") as archivo:
-        archivo.write("\n".join(resultado))
-    return "¡Se ha realizado correctamente la traducción!"
+def traducirTokensAux(pListaTokens, pResultado):
+    while True:
+        nombreArchivo = pedirNombreArchivo()
+        try:
+            with open(nombreArchivo, "r", encoding="utf-8") as archivo:
+                if estarVacio(archivo):
+                    print("El archivo está vacío\nPor favor vuelva a intentarlo")
+                    continue
+        except:
+            print("El archivo ingresado no existe\nPor favor vuelva a intentarlo")
+            continue
+        if estarVacia(pListaTokens):
+            print ("Lo sentimos, no se encontraron tokens cargados")
+            break
+        while True:
+            nombreNuevo = input("Ingrese el nombre del nuevo archivo: ").strip()
+            if nombreNuevo == "":
+                print("Nombre de archivo de salida inválido\nPor favor vuelva a intentarlo")
+                continue
+            try:
+                with open(nombreArchivo, "r", encoding="utf-8") as archivo:
+                    print("¡Proceso realizado con éxito!")
+                    traducirTokens(pListaTokens, archivo, nombreNuevo, pResultado)
+                    return nombreArchivo
+            except:
+                break
+
+def traducirTokens(pListaTokens, pArchivo, pNombreNuevo, pResultado):
+    for linea in pArchivo:
+        espacios = len(linea) - len(linea.lstrip())
+        contenido = linea.strip()
+        partes = re.split(r'(\W)', contenido)
+        nueva = []
+        for parte in partes:
+            if parte.isdigit():
+                nueva.append(parte)
+                continue
+            reemplazado = False
+            for original, traduccion in pListaTokens:
+                if parte == original:
+                    nueva.append(traduccion)
+                    reemplazado = True
+                    break
+            if not reemplazado:
+                nueva.append(parte)
+        nuevaLinea = " " * espacios + "".join(nueva)
+        pResultado.append(nuevaLinea)
+    with open(pNombreNuevo, "w", encoding="utf-8") as archivo:
+        archivo.write("\n".join(pResultado))
+    return pResultado
+
+def pedirNombreArchivo():
+    while True:
+        nombreArchivo = input("Ingrese el nombre del archivo a traducir: ")
+        if nombreArchivo == "":
+            print("Nombre de archivo de salida inválido\nPor favor vuelva a intentarlo")
+            continue
+        return nombreArchivo
 
