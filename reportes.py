@@ -1,5 +1,17 @@
+#Librerías utilizadas
 from datetime import datetime
+
+#Funciones para generar reportes    
 def generarHTML(pListaTokens, pDuracion, pTotalPalabras, pTotalReemplazos, pConteo):
+    """
+    Función que genera un reporte HTML con el conteo de reemplazos de cada palabra original, la duración del proceso de traducción y el porcentaje de palabras reemplazadas
+    Entrada: pListaTokens(list)- Lista de tokens
+             pDuracion(float)- Duración del proceso de traducción en segundos
+             pTotalPalabras(int)- Total de palabras en el archivo traducido
+             pTotalReemplazos(int)- Total de palabras reemplazadas en el proceso de traducción
+             pConteo(list)- Lista con el conteo de cada palabra original y su traducción
+    Salida: None
+    """
     ahora = datetime.now()
     nombreArchivo = ahora.strftime("reporteHTML_%d-%m-%y_%H-%M-%S.html")
     fecha = ahora.strftime("%d/%m/%y-%H:%M:%S")
@@ -49,4 +61,4 @@ def generarHTML(pListaTokens, pDuracion, pTotalPalabras, pTotalReemplazos, pCont
     archivo = open(nombreArchivo, "x", encoding="utf-8")
     archivo.write(contenido)
     archivo.close()
-    print("¡Reporte HTML generado correctamente!")
+    return "¡Reporte HTML generado correctamente!"

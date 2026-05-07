@@ -6,50 +6,88 @@
 #Importación de librerías
 import tokens
 import reportes
+import bitacora
 import time
 
 #Definición de variables globales
 listaTokens = []
 lineasTraducidas = []
 conteo = []
-
+listaBitacora = bitacora.cargarBitacora()
 #Definición de la función principal
 def menu():
     global conteo, totalReemplazos, duracion, totalPalabras
     while True:
         print("===========MENÚ PRINCIPAL===========")
-        print("1. Cargar tokens\n2. Mostrar tokens\n3. Agregar/modificar token\n4. Guardar tokens\n5. Traducir código\n6. Generar CSV\n7. Generar HTML\n8. Bitácora (submenú)\n9. Salir")
-        opcion = (input("Seleccione una opción: "))
+        print("1. Cargar tokens")
+        print("2. Mostrar tokens")
+        print("3. Agregar/modificar token")
+        print("4. Guardar tokens")
+        print("5. Traducir código")
+        print("6. Generar CSV")
+        print("7. Generar HTML")
+        print("8. Bitácora")
+        print("9. Salir")
+        opcion = input("Seleccione una opción: ")
         if opcion == "1":
+            bitacora.registrarAccion(listaBitacora,
+            "Se ejecutó la opción cargar tokens")
             print(tokens.cargarTokensAux(listaTokens))
         elif opcion == "2":
+            bitacora.registrarAccion(listaBitacora,
+            "Se ejecutó la opción mostrar tokens")
             tokens.mostrarTokens(listaTokens)
         elif opcion == "3":
+            bitacora.registrarAccion(listaBitacora,
+            "Se ejecutó la opción agregar/modificar token")
             print(tokens.agregarModifAux(listaTokens))
         elif opcion == "4":
+            bitacora.registrarAccion(listaBitacora,
+            "Se ejecutó la opción guardar tokens")
             print(tokens.guardarArchivoAux(listaTokens))
         elif opcion == "5":
+            bitacora.registrarAccion(listaBitacora,
+            "Se ejecutó la opción traducir código")
             inicio = time.time()
             nombreArchivo = tokens.traducirTokensAux(listaTokens, lineasTraducidas)
             duracion = tokens.procesarTiempo(inicio)
             totalPalabras = tokens.contarPalabras(nombreArchivo)
             conteo, totalReemplazos = tokens.contarReemplazos(listaTokens, lineasTraducidas)
         elif opcion == "6":
+            bitacora.registrarAccion(listaBitacora,
+            "Se ejecutó la opción generar CSV")
             print(tokens.generarCsvAux(listaTokens, conteo))
         elif opcion == "7":
-            reportes.generarHTML(listaTokens, duracion, totalPalabras, totalReemplazos, conteo)
+            bitacora.registrarAccion(listaBitacora,
+            "Se ejecutó la opción generar HTML")
+            reportes.generarHTML(listaTokens, duracion,
+            totalPalabras, totalReemplazos, conteo)
         elif opcion == "8":
-            opcion2 = input("¿Qué desea realizar?\nA) Acciones por día escogido\nB) Acciones con algunas palabras clave\nC)Salir del submenú").lower()
-            if opcion2 == "a":
-                pass
-            elif opcion2 == "b":
-                pass
-            elif opcion2 == "c":
-                pass
+            bitacora.registrarAccion(listaBitacora,
+            "Se ingresó al submenú de bitácora")
+            while True:
+                print("===========BITÁCORA===========")
+                print("A) Acciones por día escogido")
+                print("B) Acciones por palabra clave")
+                print("C) Salir")
+                opcion2 = input("Seleccione una opción: ").lower()
+                if opcion2 == "a":
+                    fecha = input("Ingrese la fecha (AAAA-MM-DD): ")
+                    bitacora.buscarPorFecha(listaBitacora, fecha)
+                elif opcion2 == "b":
+                    palabra = input("Ingrese la palabra clave: ")
+                    bitacora.buscarPorPalabra(listaBitacora, palabra)
+                elif opcion2 == "c":
+                    bitacora.registrarAccion(listaBitacora,
+                    "Se salió del submenú de bitácora")
+                    break
+                else:
+                    print("Opción inválida")
         elif opcion == "9":
+            bitacora.registrarAccion(listaBitacora,"El usuario salió del programa")
             print("Saliendo del programa")
             break
         else:
-            print("Opción Inválida")
+            print("Opción inválida")
 #PP
 menu()

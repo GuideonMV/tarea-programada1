@@ -1,10 +1,11 @@
+#Librerías utilizadas
+import time
 import re
-import datetime
-import csv
 
+#Funciones para procesar tokens
 def estarVacio(pArchivo):
     """
-    Función uqe verifica si un archivo está vacío o no
+    Función que verifica si un archivo está vacío o no
     Entrada: Archivo(str)- Archivo a verficar
     Salida: bool- True si el archivo está vacío, False si no lo está
     """
@@ -37,36 +38,45 @@ def cargarTokensAux(pListaTokens):
         try:
             with open(nombreArchivo, "r", encoding="utf-8") as archivo:
                 if estarVacio(archivo):
-                    return "El archivo ingresado está vacío"
-                archivo.seek(0)
+                    print("El archivo ingresado está vacío")
+                    continue
                 while True:
+                    archivo.seek(0)
                     separador = input("Ingrese el separador utilizado: ")
-                    try:
-                        return cargarTokens(pListaTokens, archivo, separador)
-                    except:
-                        print("El separador ingresado no es correcto")       
+                    if cargarTokens(pListaTokens, archivo, separador):
+                        return "¡Proceso realizado con éxito!"
+                    else:
+                        print("El separador ingresado no es correcto")
+                        opcion = int(input("Ingrese:\n1-Volver a intentar\n2-Salir\nSu opción: "))
+                        while opcion != 1 and opcion != 2:
+                            print("Opcion invalida")
+                            opcion = int(input("Ingrese:\n1-Volver a intentar\n2-Salir\nSu opción: "))
+                        if opcion == 2:
+                            return "Se volverá al menú principal"
         except:
             print("El archivo ingresado no existe")
+            opcion = int(input("Ingrese:\n1-Volver a intentar\n2-Salir\nSu opción: "))
+            while opcion != 1 and opcion != 2:
+                print("Opcion invalida")
+                opcion = int(input("Ingrese:\n1-Volver a intentar\n2-Salir\nSu opción: "))
+            if opcion == 2:
+                return "Se volverá al menú principal"
 
 def cargarTokens(pListaTokens, nombreArchivo, separador):
     """
-    Función que carga los tokens desde un archivo
+    Función que procesa un archivo de tokens y los agrega a la lista de tokens
     Entrada: pListaTokens(list)- Lista de tokens
-             nombreArchivo(str)- Nombre del archivo a cargar
+             nombreArchivo(str)- Nombre del archivo a procesar
              separador(str)- Separador utilizado en el archivo
-    Salida: str- Mensaje indicando el resultado del proceso
+    Salida: bool- True si el proceso se realiza con éxito, False si no
     """
-    mensaje = False
     for linea in nombreArchivo:
         linea = linea.strip()
         if linea == "":
             continue
-        if separador not in linea:
-            if not mensaje:
-                print("Uno o varios de los tokens ingresados no tienen separador o es incorrecto")
-                mensaje = True
-            continue
         partes = linea.split(separador)
+        if separador not in linea:
+            return False
         if len(partes) < 2:
             continue
         palabraReservada = partes[0].strip()
@@ -78,11 +88,7 @@ def cargarTokens(pListaTokens, nombreArchivo, separador):
             pListaTokens.append((palabraReservada, reemplazo))
         else:
             print(f"El token '{palabraReservada + " " + separador + " " + reemplazo}' ya existe en la base de datos")
-    if len(pListaTokens) == 0:
-        return "No se encontraron tokens válidos"
-    if len(pListaTokens) > 1:
-        print("Los demás tokens han sido agregados")
-    return "¡Proceso realizado con éxito!"
+    return True
 
 def mostrarTokens(pListaTokens):
     """
@@ -149,10 +155,16 @@ def agregarModif(pListaTokens, textoTokens, separador):
             print("====================================")
             continue
         if existeReservada(pListaTokens, palabraReservada):
-            print(f"¡El token '{palabraReservada + ' ' + separador + ' ' + traduccion}' se encontró en la base de datos!\nSe procederá a modificarlo")
-            print("====================================")
-            print(modificarToken(pListaTokens, palabraReservada))
-            print("====================================")
+            opcion = int(input(f"¡El token '{palabraReservada + ' ' + separador + ' ' + traduccion}' se encontró en la base de datos!\n¿Desea agregarlo?\n1- Si\n2- No\nOpcion: "))
+            while opcion != 1 and opcion != 2:
+                print("Opcion invalida")
+                opcion = int(input(f"¡El token '{palabraReservada + ' ' + separador + ' ' + traduccion}' se encontró en la base de datos!\n¿Desea agregarlo?\n1- Si\n2- No\nOpcion: "))
+            if opcion == 1:
+                print("====================================")
+                print(modificarToken(pListaTokens, palabraReservada))
+                print("====================================")
+            elif opcion == 2:
+                print(f"No se modificara el token '{palabraReservada + ' ' + separador + ' ' + traduccion}'")
         else:
             print(f"No se encontró el token '{palabraReservada + ' ' + separador + ' ' + traduccion}' en la base de datos\nSe procederá a agregarlo")
             print("====================================")
@@ -183,15 +195,15 @@ def modificarToken(pListaTokens, pPalabraReservada):
         tupla = pListaTokens[i]
         palabraReservada = tupla[0]
         if palabraReservada == pPalabraReservada:
-                nuevoReemplazo = input("Ingrese el nuevo reemplazo: ").strip().lower()
-                if nuevoReemplazo == "":
-                    return "El reemplazo no puede estar vacío"
-                if existeTraduccion(pListaTokens, nuevoReemplazo):
-                    return f"La traducción: '{nuevoReemplazo}' ya está siendo utilizada en otro token"
-                pListaTokens[i] = (pPalabraReservada, nuevoReemplazo)
-                print("====================================")
-                return "¡El token ha sido modificado correctamente!"
-        return "Token no encontrado"
+            nuevoReemplazo = input("Ingrese el nuevo reemplazo: ").strip().lower()
+            if nuevoReemplazo == "":
+                return "El reemplazo no puede estar vacío"
+            if existeTraduccion(pListaTokens, nuevoReemplazo):
+                return f"La traducción: '{nuevoReemplazo}' ya está siendo utilizada en otro token"
+            pListaTokens[i] = (pPalabraReservada, nuevoReemplazo)
+            print("====================================")
+            return "¡El token ha sido modificado correctamente!"
+    return "Token no encontrado"
 
 def agregarToken(pListaTokens, pPalabraReservada, pTraduccion):
     """
@@ -229,21 +241,22 @@ def guardarArchivoAux(pListaTokens):
             else:
                 with open(nombreArchNuev, "w", encoding="utf-8") as archivo:
                     return guardarArchivo(pListaTokens, archivo, separador)
-                
+
 def guardarArchivo(pListaTokens, pArchivo, pSeparador):
     """"
     Función que guarda la lista de tokens en un archivo con el formato adecuado
     Entrada: pListaTokens(list)- Lista de tokens
              pArchivo(file)- Archivo donde se guardarán los tokens
              pSeparador(str)- Separador utilizado en el archivo
-    Salida: str- Mensaje indicando el resultado del proceso"""
+    Salida: str- Mensaje indicando el resultado del proceso
+    """
     for palabra, token in pListaTokens:
         linea = palabra + " " + pSeparador + " " + token + "\n"
         pArchivo.write(linea)
     print("====================================")
     return "¡Archivo guardado correctamente!"
 
-def traducirTokensAux(pListaTokens, pResultado, pListaPalabras, pListaConteo):
+def traducirTokensAux(pListaTokens, pResultado):
     """
     Función auxiliar que solicita al usuario el nombre del archivo a traducir y llama a la función traducirTokens para procesar el archivo
     Entrada: pListaTokens(list)- Lista de tokens
@@ -252,7 +265,6 @@ def traducirTokensAux(pListaTokens, pResultado, pListaPalabras, pListaConteo):
              pListaConteo(list)- Lista donde se guardará el conteo de cada palabra original encontrada en el proceso de traducción
     Salida: str- Mensaje indicando el resultado del proceso
     """
-
     while True:
         nombreArchivo = pedirNombreArchivo()
         try:
@@ -274,12 +286,12 @@ def traducirTokensAux(pListaTokens, pResultado, pListaPalabras, pListaConteo):
             try:
                 with open(nombreArchivo, "r", encoding="utf-8") as archivo:
                     print("¡Proceso realizado con éxito!")
-                    traducirTokens(pListaTokens, archivo, nombreNuevo, pResultado, pListaPalabras, pListaConteo)
+                    traducirTokens(pListaTokens, archivo, nombreNuevo, pResultado)
                     return nombreArchivo
             except:
                 break
 
-def traducirTokens(pListaTokens, pArchivo, pNombreNuevo, pResultado, pListaPalabras, pListaConteo):
+def traducirTokens(pListaTokens, pArchivo, pNombreNuevo, pResultado):
     """
     Función que traduce el código de un archivo utilizando la lista de tokens y guarda el resultado en un nuevo archivo
     Entrada: pListaTokens(list)- Lista de tokens
@@ -288,7 +300,6 @@ def traducirTokens(pListaTokens, pArchivo, pNombreNuevo, pResultado, pListaPalab
              pResultado(list)- Lista donde se guardarán las líneas traducidas
     Salida: str- Mensaje indicando el resultado del proceso
     """
-    
     for linea in pArchivo:
         espacios = len(linea) - len(linea.lstrip())
         contenido = linea.strip()
@@ -303,7 +314,6 @@ def traducirTokens(pListaTokens, pArchivo, pNombreNuevo, pResultado, pListaPalab
                 if parte == original:
                     nueva.append(traduccion)
                     reemplazado = True
-                    actualizarConteo(pListaPalabras, pListaConteo, original)
                     break
             if not reemplazado:
                 nueva.append(parte)
@@ -326,69 +336,86 @@ def pedirNombreArchivo():
             continue
         return nombreArchivo
 
-def actualizarConteo(pListaPalabras, pListaConteo, palabra):
+def contarReemplazos(pListaTokens, pResultado):
     """
-    Función que actualiza el conteo de una palabra en la lista de conteo
-    Entrada: pListaPalabras(list)- Lista de palabras originales
-             pListaConteo(list)- Lista de conteo de cada palabra original
-             palabra(str)- Palabra para actualizar su conteo
-    Salida: None
-    """
-    for i in range(len(pListaPalabras)):
-        if pListaPalabras[i] == palabra:
-            pListaConteo[i] += 1
-            return
-    pListaPalabras.append(palabra)
-    pListaConteo.append(1)
-    
-def generarCsvAux(pListaTokens, pListaPalabras, pListaConteo):
-    """
-    Función auxiliar que solicita al usuario el nombre del archivo CSV a generar y llama a la función generarCsv para procesar los datos
+    Función que cuenta la cantidad de veces que se reemplazó cada palabra original en el proceso de traducción
     Entrada: pListaTokens(list)- Lista de tokens
-             pListaPalabras(list)- Lista de palabras originales encontradas en el proceso de traducción
-             pListaConteo(list)- Lista de conteo de cada palabra original encontrada en el proceso de traducción
+             pResultado(list)- Lista de líneas traducidas
+    Salida: tuple- Tupla con el conteo de cada palabra original y el total de reemplazos
+    """
+    conteo = []
+    total = 0
+    for original, traduccion in pListaTokens:
+        cantidad = 0
+        for linea in pResultado:
+            palabras = linea.split()
+            for palabra in palabras:
+                if palabra == traduccion:
+                    cantidad += 1
+        conteo.append((original, traduccion, cantidad))
+        total += cantidad
+    return conteo, total
+
+def contarPalabras(pNombreArchivo):
+    """
+    Función que cuenta la cantidad de palabras en un archivo
+    Entrada: pNombreArchivo(str)- Nombre del archivo a contar
+    Salida: int- Cantidad de palabras en el archivo
+    """
+    totalPalabras = 0
+    with open(pNombreArchivo, "r", encoding="utf-8") as archivo:
+        for linea in archivo:
+            palabras = linea.split()
+            totalPalabras += len(palabras)
+    return totalPalabras
+
+def procesarTiempo(pInicio):
+    """
+    Función que calcula la duración de un proceso dado su tiempo de inicio
+    Entrada: pInicio(float)- Tiempo de inicio del proceso
+    Salida: float- Duración del proceso en segundos
+    """
+    fin = time.time()
+    duracion = fin - pInicio
+    return duracion
+
+def generarCsvAux(pResultado, pConteo):
+    """
+    Función auxiliar que solicita al usuario el nombre del archivo CSV a generar y llama a la función generarCsv para procesar el conteo de reemplazos
+    Entrada: pResultado(list)- Lista de líneas traducidas
+             pConteo(list)- Lista con el conteo de cada palabra original y su traducción
     Salida: str- Mensaje indicando el resultado del proceso
     """
-    if len(pListaPalabras)==0:
-        return "No se han realizado traducciones aún, no hay datos para generar el CVS"
+    if len(pResultado) == 0 or len(pConteo) == 0:
+        return "No se han realizado traducciones aún, no hay datos para generar el CSV"
     nombreArchivo = input("Ingrese el nombre del archivo CSV: ").strip()
     while True:
         if nombreArchivo == "":
             print("Nombre inválido")
-            continue
+            nombreArchivo = input("Ingrese el nombre del archivo CSV: ").strip()
         elif not nombreArchivo.endswith(".csv"):
             print("El archivo debe terminar en .csv")
-            continue
-        else: 
-            return generarCsv(pListaTokens, pListaPalabras, pListaConteo, nombreArchivo)
-            
-def generarCsv(pListaTokens, pListaPalabras, pListaConteo, nombreArchivo):
+            nombreArchivo = input("Ingrese el nombre del archivo CSV: ").strip()
+        else:
+            return generarCsv(pConteo, nombreArchivo)
+
+def generarCsv(pConteo, pNombreArchivo):
     """
-    Función que genera un archivo CSV con las palabras originales, sus traducciones y el conteo de cada palabra original encontrada en el proceso de traducción
-    Entrada: pListaTokens(list)- Lista de tokens
-             pListaPalabras(list)- Lista de palabras originales encontradas en el proceso de traducción
-             pListaConteo(list)- Lista de conteo de cada palabra original encontrada en el proceso de traducción
-             nombreArchivo(str)- Nombre del archivo CSV a generar
+    Función que genera un archivo CSV con el conteo de reemplazos de cada palabra original
+    Entrada: pConteo(list)- Lista con el conteo de cada palabra original y su traducción
+             pNombreArchivo(str)- Nombre del archivo CSV a generar
     Salida: str- Mensaje indicando el resultado del proceso
     """
-    datos = []
-    for palabra, token in pListaTokens:
-        cantidad = 0
-        for i in range(len(pListaPalabras)):
-            if pListaPalabras[i] == palabra:
-                cantidad = pListaConteo[i]
-                break
-        datos.append((palabra, token, cantidad))
+    datos = list(pConteo)
     for i in range(len(datos)):
         for j in range(i + 1, len(datos)):
             if datos[j][2] > datos[i][2]:
                 datos[i], datos[j] = datos[j], datos[i]
     try:
-        with open(nombreArchivo, "w", encoding="utf-8") as archivo:
-            archivo.write("Original,Reemplazo,Cantidad\n")
-            for palabra, token, cantidad in datos:
-                archivo.write(f"{palabra},{token},{cantidad}\n")
+        with open(pNombreArchivo, "w", encoding="utf-8") as archivo:
+            archivo.write("Original;Reemplazo;Cantidad\n")
+            for original, traduccion, cantidad in datos:
+                archivo.write(f"{original};{traduccion};{cantidad}\n")
         return "¡CSV generado correctamente!"
     except PermissionError:
-        return "Cierra el archivo antes de ejecutarlo."
-
+        return "Cierra el archivo antes de ejecutarlo"
