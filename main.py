@@ -5,6 +5,7 @@
 
 #Importación de librerías
 import tokens
+import reportes
 import time
 
 #Definición de variables globales
@@ -36,9 +37,9 @@ def menu():
         elif opcion == "6":
             print(tokens.generarCsvAux(listaTokens, conteo))
         elif opcion == "7":
-            pass
+            reportes.generarHTML(listaTokens, duracion, totalPalabras, totalReemplazos, conteo)
         elif opcion == "8":
-            opcion2 = input("Que desea realizar\nA) Acciones por día escogido\nB) Acciones con algunas palabras clave\nC)Salir del submenú").lower()
+            opcion2 = input("¿Qué desea realizar?\nA) Acciones por día escogido\nB) Acciones con algunas palabras clave\nC)Salir del submenú").lower()
             if opcion2 == "a":
                 pass
             elif opcion2 == "b":
