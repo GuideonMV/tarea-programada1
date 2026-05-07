@@ -5,12 +5,16 @@
 
 #Importación de librerías
 import tokens
+import time
 
 #Definición de variables globales
-listaTokens=[]
+listaTokens = []
+lineasTraducidas = []
+conteo = []
 
 #Definición de la función principal
 def menu():
+    global conteo, totalReemplazos, duracion, totalPalabras
     while True:
         print("===========MENÚ PRINCIPAL===========")
         print("1. Cargar tokens\n2. Mostrar tokens\n3. Agregar/modificar token\n4. Guardar tokens\n5. Traducir código\n6. Generar CSV\n7. Generar HTML\n8. Bitácora (submenú)\n9. Salir")
@@ -24,14 +28,23 @@ def menu():
         elif opcion == "4":
             print(tokens.guardarArchivoAux(listaTokens))
         elif opcion == "5":
-            print(tokens.traducirTokensAux(listaTokens))
+            inicio = time.time()
+            nombreArchivo = tokens.traducirTokensAux(listaTokens, lineasTraducidas)
+            duracion = tokens.procesarTiempo(inicio)
+            totalPalabras = tokens.contarPalabras(nombreArchivo)
+            conteo, totalReemplazos = tokens.contarReemplazos(listaTokens, lineasTraducidas)
         elif opcion == "6":
-            pass
+            print(tokens.generarCsvAux(listaTokens, conteo))
         elif opcion == "7":
             pass
         elif opcion == "8":
-            # otro menu
-            pass
+            opcion2 = input("Que desea realizar\nA) Acciones por día escogido\nB) Acciones con algunas palabras clave\nC)Salir del submenú").lower()
+            if opcion2 == "a":
+                pass
+            elif opcion2 == "b":
+                pass
+            elif opcion2 == "c":
+                pass
         elif opcion == "9":
             print("Saliendo del programa")
             break
