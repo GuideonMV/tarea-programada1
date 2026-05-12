@@ -14,9 +14,13 @@ listaTokens = []
 lineasTraducidas = []
 conteo = []
 listaBitacora = bitacora.cargarBitacora()
+
 #Definición de la función principal
 def menu():
     global conteo, totalReemplazos, duracion, totalPalabras
+    totalPalabras = 0
+    totalReemplazos = 0
+    duracion = 0
     while True:
         print("===========MENÚ PRINCIPAL===========")
         print("1. Cargar tokens")
@@ -32,7 +36,7 @@ def menu():
         if opcion == "1":
             bitacora.registrarAccion(listaBitacora,
             "Se ejecutó la opción cargar tokens")
-            print(tokens.cargarTokensAux(listaTokens))
+            print(tokens.cargarTokensAux(listaTokens, listaBitacora))
         elif opcion == "2":
             bitacora.registrarAccion(listaBitacora,
             "Se ejecutó la opción mostrar tokens")
@@ -40,16 +44,17 @@ def menu():
         elif opcion == "3":
             bitacora.registrarAccion(listaBitacora,
             "Se ejecutó la opción agregar/modificar token")
-            print(tokens.agregarModifAux(listaTokens))
+            print(tokens.agregarModifAux(listaTokens, listaBitacora))
         elif opcion == "4":
             bitacora.registrarAccion(listaBitacora,
             "Se ejecutó la opción guardar tokens")
             print(tokens.guardarArchivoAux(listaTokens))
         elif opcion == "5":
-            bitacora.registrarAccion(listaBitacora,
-            "Se ejecutó la opción traducir código")
+            bitacora.registrarAccion(listaBitacora, "Se ejecutó la opción traducir código")
             inicio = time.time()
             nombreArchivo = tokens.traducirTokensAux(listaTokens, lineasTraducidas)
+            if nombreArchivo is None:
+                continue
             duracion = tokens.procesarTiempo(inicio)
             totalPalabras = tokens.contarPalabras(nombreArchivo)
             conteo, totalReemplazos = tokens.contarReemplazos(listaTokens, lineasTraducidas)
@@ -60,8 +65,7 @@ def menu():
         elif opcion == "7":
             bitacora.registrarAccion(listaBitacora,
             "Se ejecutó la opción generar HTML")
-            reportes.generarHTML(listaTokens, duracion,
-            totalPalabras, totalReemplazos, conteo)
+            print(reportes.generarHTMLAux(listaTokens, duracion, totalPalabras, totalReemplazos, conteo))
         elif opcion == "8":
             bitacora.registrarAccion(listaBitacora,
             "Se ingresó al submenú de bitácora")

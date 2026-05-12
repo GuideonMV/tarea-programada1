@@ -15,7 +15,12 @@ def generarHTML(pListaTokens, pDuracion, pTotalPalabras, pTotalReemplazos, pCont
     ahora = datetime.now()
     nombreArchivo = ahora.strftime("reporteHTML_%d-%m-%y_%H-%M-%S.html")
     fecha = ahora.strftime("%d/%m/%y-%H:%M:%S")
-    titulo = input("Ingrese el título del reporte: ")
+    while True:
+        titulo = input("Ingrese el título del reporte: ").strip()
+        if titulo == "":
+            print("El título no puede estar vacío")
+            continue
+        break
     if pTotalPalabras > 0:
         porcentaje = (pTotalReemplazos / pTotalPalabras) * 100
     else:
@@ -27,7 +32,7 @@ def generarHTML(pListaTokens, pDuracion, pTotalPalabras, pTotalReemplazos, pCont
             color = "#f2f2f2"
         else:
             color = "#ffffff"
-        filas += f'<tr style="background-color:{color};"><td>{original}</td><td>{reemplazo}</td><td>{cantidad}</td></tr>\n'
+        filas += f'<tr style="background-color:{color}; text-align:center;"><td>{original}</td><td>{reemplazo}</td><td>{cantidad}</td></tr>\n'
         i += 1
     contenido = f"""
 <!DOCTYPE html>
@@ -47,7 +52,7 @@ def generarHTML(pListaTokens, pDuracion, pTotalPalabras, pTotalReemplazos, pCont
         <p>Total de palabras reemplazadas: {pTotalReemplazos}</p>
         <p>Porcentaje de palabras reemplazadas: {round(porcentaje, 2)}%</p>
     </section>
-    <table>
+    <table> 
         <tr>
             <th style="text-align:center;">Palabra Original</th>
             <th style="text-align:center;">Reemplazo</th>
@@ -62,3 +67,17 @@ def generarHTML(pListaTokens, pDuracion, pTotalPalabras, pTotalReemplazos, pCont
     archivo.write(contenido)
     archivo.close()
     return "¡Reporte HTML generado correctamente!"
+
+def generarHTMLAux(pListaTokens, pDuracion, pTotalPalabras, pTotalReemplazos, pConteo):
+    """
+    Función auxiliar que valida que se haya traducido un archivo antes de generar el reporte HTML
+    Entrada: pListaTokens(list)- Lista de tokens
+             pDuracion(float)- Duración del proceso de traducción en segundos
+             pTotalPalabras(int)- Total de palabras en el archivo traducido
+             pTotalReemplazos(int)- Total de palabras reemplazadas en el proceso de traducción
+             pConteo(list)- Lista con el conteo de cada palabra original y su traducción
+        Salida: str- Mensaje indicando el resultado del proceso
+    """
+    if pTotalPalabras == 0:
+        return "Primero debe traducir un archivo (opción 5)"
+    return generarHTML(pListaTokens, pDuracion, pTotalPalabras, pTotalReemplazos, pConteo)
