@@ -61,7 +61,7 @@ def menu():
         elif opcion == "6":
             bitacora.registrarAccion(listaBitacora,
             "Se ejecutó la opción generar CSV")
-            print(tokens.generarCsvAux(listaTokens, conteo))
+            print(tokens.generarCsvAux(lineasTraducidas, conteo))
         elif opcion == "7":
             bitacora.registrarAccion(listaBitacora,
             "Se ejecutó la opción generar HTML")

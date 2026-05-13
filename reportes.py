@@ -48,7 +48,7 @@ def generarHTML(pListaTokens, pDuracion, pTotalPalabras, pTotalReemplazos, pCont
     </header>
     <section>
         <h2>Fecha y hora de generación: {fecha}</h2>
-        <p>Duración total de procesamiento: {round(pDuracion, 2)}</p>
+        <p>Duración total de procesamiento: {round(pDuracion, 2)}s</p>
         <p>Total de palabras reemplazadas: {pTotalReemplazos}</p>
         <p>Porcentaje de palabras reemplazadas: {round(porcentaje, 2)}%</p>
     </section>

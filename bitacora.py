@@ -51,7 +51,7 @@ def buscarPorFecha(pBitacora, pFecha):
     if not encontrado:
         print("No se encontraron registros")
     return
-
+    
 def buscarPorPalabra(pBitacora, pPalabra):
     """
     Función que busca registros en la bitácora por palabra clave en la descripción de la acción

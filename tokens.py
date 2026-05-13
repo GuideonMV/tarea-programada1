@@ -69,9 +69,9 @@ def cargarTokens(pListaTokens, nombreArchivo, separador, pListaBitacora):
         linea = linea.strip()
         if linea == "":
             continue
-        partes = linea.split(separador)
-        if separador not in linea:
+        if separador not in linea:           
             return False
+        partes = linea.split(separador) 
         if len(partes) < 2:
             continue
         palabraReservada = partes[0].strip()
@@ -87,6 +87,7 @@ def cargarTokens(pListaTokens, nombreArchivo, separador, pListaBitacora):
                 if pListaTokens[i][0] == palabraReservada:
                     pListaTokens[i] = (palabraReservada, reemplazo)
                     bitacora.registrarAccion(pListaBitacora, f"Se actualizó el token '{palabraReservada}'")
+                    print(f"El token '{palabraReservada}' ya existía. Se ha actualizado con el valor '{reemplazo}'")
                     break
     return True
 
@@ -99,11 +100,10 @@ def mostrarTokens(pListaTokens):
     if estarVacia(pListaTokens):
         print("No hay tokens cargados en la base de datos")
         return
-    if not estarVacia(pListaTokens):
-        print("===========TOKENS CARGADOS===========")
-        for tupla in pListaTokens:
-            print(tupla[0], "->", tupla[1])
-        return
+    print("===========TOKENS CARGADOS===========")
+    for tupla in pListaTokens:
+        print(tupla[0], "->", tupla[1])
+    return    
 
 def estarVacia(pListaTokens):
     """
@@ -277,7 +277,7 @@ def guardarArchivoAux(pListaTokens):
         if nombreArchNuev == "":
             print ("Debe de ingresar un nombre para el archivo")
             continue
-        if not re.match(r"^[a-z0-9]+\.txt$", nombreArchNuev):
+        if not re.match(r"^[a-zA-Z0-9_-]+\.txt$", nombreArchNuev):
             print("El formato del nombre no es válido\nDebe de terminar en .txt")
             continue
         while True:
@@ -335,7 +335,7 @@ def pedirArchivoSalida(pListaTokens, pNombreArchivo, pResultado):
         with open(pNombreArchivo, "r", encoding="utf-8") as archivo:
             print("¡Proceso realizado con éxito!")
             traducirTokens(pListaTokens, archivo, nombreNuevo, pResultado)
-            return pNombreArchivo
+            return nombreNuevo
 
 def traducirTokensAux(pListaTokens, pResultado):
     """
